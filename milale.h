@@ -36,11 +36,11 @@ typedef struct guess
 } Guess;
 
 Guess make_guess();
-bool check_guess(Guess *guess);
-bool check_word(Word word);
+bool check_guess(Guess *guess, const Word secretWord);
+bool check_word(const Word word);
 void set_console_color(State state);
 void print_letter(char letter, State state);
-void print_guess(Guess guess);
-void print_board(Guess guesses[MAX_GUESSES]);
+void print_guess(const Guess guess);
+void print_board(const Guess guesses[MAX_GUESSES]);
 
 #endif
