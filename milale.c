@@ -70,7 +70,7 @@ void print_letter(char letter, State state)
     set_console_color(ABSENT);
 }
 
-void print_guess(const Guess guess)
+void print_guess(const Guess const guess)
 {
     Word upper;
     strcpy(upper, guess.word);
@@ -83,14 +83,14 @@ void print_guess(const Guess guess)
     printf("\n");
 }
 
-void print_word(const Word word)
+void print_word(const Word const word)
 {
     Guess wrapper = NEW_GUESS;
     strcpy(wrapper.word, word);
     print_guess(wrapper);
 }
 
-void print_board(const Guess guesses[MAX_GUESSES])
+void print_board(const Guess const guesses[MAX_GUESSES])
 {
     for (int i = 0; i < MAX_GUESSES; i++)
     {
@@ -98,7 +98,7 @@ void print_board(const Guess guesses[MAX_GUESSES])
     }
 }
 
-bool check_word(const Word word)
+bool check_word(const Word const word)
 {
     for (int i = 0; i < VALID_GUESSES_LEN; i++)
     {
@@ -137,7 +137,7 @@ Guess make_guess()
     return newGuess;
 }
 
-bool check_guess(Guess *guess, const Word secretWord)
+bool check_guess(Guess *guess, const Word const secretWord)
 {
     int *guessBuckets = get_letter_count(guess->word);
     int *secretBuckets = get_letter_count(secretWord);
