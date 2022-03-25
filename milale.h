@@ -6,13 +6,20 @@
 // Constants
 #define MAX_WORD_LEN 5
 #define MAX_GUESSES 6
+#define NEW_GUESS                                           \
+    {                                                       \
+        "_____", { ABSENT, ABSENT, ABSENT, ABSENT, ABSENT } \
+    }
 
 // Strings
 #define EMPTY_LETTER '_'
-#define ENTER_WORD "Please enter a 5 letters word:"
-#define ERR_TOO_SHORT "Word too short, please enter a 5 letters word."
-#define ERR_TOO_LONG "Word too long, please enter a 5 letters word."
-#define ERR_NOT_FOUND "Word not recognized, please enter a new word."
+#define ENTER_WORD "Please enter a 5 letters word:\n"
+#define ERR_TOO_SHORT "Word too short, please enter a 5 letters word.\n"
+#define ERR_TOO_LONG "Word too long, please enter a 5 letters word.\n"
+#define ERR_NOT_FOUND "Word not recognized, please enter a new word.\n"
+#define WELCOME "Welcome to Milale-C!\nYou have 6 tries to find the secret 5 letter word.\n\n"
+#define WIN_MSG "Congratulations! You've found the secret word in %d/6 guesses."
+#define LOSE_MSG "Too bad, noob! Better luck next time I guess...\n"
 
 // Colors
 #define COLOR_ABSENT "\033[0m"     // White
@@ -41,6 +48,7 @@ bool check_word(const Word word);
 void set_console_color(State state);
 void print_letter(char letter, State state);
 void print_guess(const Guess guess);
+void print_word(const Word word);
 void print_board(const Guess guesses[MAX_GUESSES]);
 
 #endif

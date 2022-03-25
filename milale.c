@@ -4,14 +4,43 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 int main(int argc, char const *argv[])
 {
-    Word secret = "check";
-    Guess tmp = make_guess();
-    print_guess(tmp);
-    check_guess(&tmp, secret);
-    print_guess(tmp);
+    // Intializes random number generator and a secret word
+    time_t t;
+    srand((unsigned)time(&t));
+
+    Word secret;
+    strcpy(secret, SECRET_WORDS[rand() % SECRET_WORDS_LEN]);
+
+    // Init game variables
+    Guess guesses[MAX_GUESSES] = {NEW_GUESS, NEW_GUESS, NEW_GUESS, NEW_GUESS, NEW_GUESS, NEW_GUESS};
+    int totalGuesses = 0;
+    bool done = false;
+
+    // Game
+    printf("%s", WELCOME);
+
+    while (!done && totalGuesses < MAX_GUESSES)
+    {
+        guesses[totalGuesses] = make_guess();
+        bool isCorrect = check_guess(&guesses[totalGuesses], secret);
+        print_board(guesses);
+
+        if (isCorrect)
+        {
+            done = true;
+            printf(WIN_MSG, totalGuesses + 1);
+        }
+
+        totalGuesses++;
+    }
+
+    if (!done)
+        printf(LOSE_MSG);
+
     return 0;
 }
 
@@ -54,6 +83,13 @@ void print_guess(const Guess guess)
     printf("\n");
 }
 
+void print_word(const Word word)
+{
+    Guess wrapper = NEW_GUESS;
+    strcpy(wrapper.word, word);
+    print_guess(wrapper);
+}
+
 void print_board(const Guess guesses[MAX_GUESSES])
 {
     for (int i = 0; i < MAX_GUESSES; i++)
@@ -75,23 +111,23 @@ bool check_word(const Word word)
 
 Guess make_guess()
 {
-    Guess newGuess = {"CHIPI", {ABSENT, ABSENT, ABSENT, ABSENT, ABSENT}};
+    Guess newGuess = NEW_GUESS;
     bool done = false;
     Word word;
 
     while (!done)
     {
-        printf("%s\n", ENTER_WORD);
+        printf(ENTER_WORD);
         scanf("%s", word);
         to_lowercase(word);
 
         int len = strlen(word);
         if (len < MAX_WORD_LEN)
-            printf("%s\n", ERR_TOO_SHORT);
+            printf(ERR_TOO_SHORT);
         else if (len > MAX_WORD_LEN)
-            printf("%s\n", ERR_TOO_LONG);
+            printf(ERR_TOO_LONG);
         else if (!check_word(word))
-            printf("%s\n", ERR_NOT_FOUND);
+            printf(ERR_NOT_FOUND);
         else
             done = true;
     }
