@@ -1,5 +1,7 @@
 #include "utils.h"
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 void to_uppercase(Word word)
 {
@@ -44,4 +46,49 @@ int *get_letter_count(const Word word)
     }
 
     return buckets;
+}
+
+Word *get_words_from_file(char *filename, int *length)
+{
+    FILE *fp;
+    char *line = NULL;
+    size_t len = 0;
+    long read;
+
+    fp = fopen(filename, "r");
+    if (fp == NULL)
+    {
+        printf("%s could not be opened", filename);
+        exit(1);
+    }
+
+    int size = 1024;
+    int count = 0;
+    Word *words = (Word *)malloc(size * sizeof(Word));
+
+    while ((read = getline(&line, &len, fp)) != -1)
+    {
+        if (count >= size)
+        {
+            size *= 2;
+            words = (Word *)realloc(words, size * sizeof(Word));
+            if (words == NULL)
+            {
+                printf("Failed reallocating memory");
+                exit(1);
+            }
+        }
+        strncpy(words[count], line, sizeof(Word) - 1);
+        words[count][sizeof(Word) - 1] = '\0';
+        count++;
+    }
+
+    words = (Word *)realloc(words, count * sizeof(Word));
+    *length = count;
+
+    fclose(fp);
+    if (line)
+        free(line);
+
+    return words;
 }
