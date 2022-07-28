@@ -1,5 +1,4 @@
 #include "milale.h"
-#include "data.h"
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,8 +11,14 @@ int main(int argc, char const *argv[])
     time_t t;
     srand((unsigned)time(&t));
 
+    int words_len;
+    Word *words = get_words_from_file("data/words.txt", &words_len);
+
     Word secret;
-    strcpy(secret, SECRET_WORDS[rand() % SECRET_WORDS_LEN]);
+    strcpy(secret, words[rand() % words_len]);
+
+    int valid_len;
+    Word *valid_words = get_words_from_file("data/valid.txt", &valid_len);
 
     // Init game variables
     Guess guesses[MAX_GUESSES] = {NEW_GUESS, NEW_GUESS, NEW_GUESS, NEW_GUESS, NEW_GUESS, NEW_GUESS};
@@ -25,7 +30,7 @@ int main(int argc, char const *argv[])
 
     while (!done && totalGuesses < MAX_GUESSES)
     {
-        guesses[totalGuesses] = make_guess();
+        guesses[totalGuesses] = make_guess(valid_words, valid_len);
         bool isCorrect = check_guess(&guesses[totalGuesses], secret);
         print_board(guesses);
 
@@ -40,6 +45,8 @@ int main(int argc, char const *argv[])
 
     if (!done)
         printf(LOSE_MSG);
+
+    free(words);
 
     return 0;
 }
@@ -98,18 +105,18 @@ void print_board(const Guess const guesses[MAX_GUESSES])
     }
 }
 
-bool check_word(const Word const word)
+bool check_word(const Word const word, Word *valid_words, int valid_len)
 {
-    for (int i = 0; i < VALID_GUESSES_LEN; i++)
+    for (int i = 0; i < valid_len; i++)
     {
-        if (strcmp(word, VALID_GUESSES[i]) == 0)
+        if (strcmp(word, valid_words[i]) == 0)
             return true;
     }
 
     return false;
 }
 
-Guess make_guess()
+Guess make_guess(Word *valid_words, int valid_len)
 {
     Guess newGuess = NEW_GUESS;
     bool done = false;
@@ -126,7 +133,7 @@ Guess make_guess()
             printf(ERR_TOO_SHORT);
         else if (len > MAX_WORD_LEN)
             printf(ERR_TOO_LONG);
-        else if (!check_word(word))
+        else if (!check_word(word, valid_words, valid_len))
             printf(ERR_NOT_FOUND);
         else
             done = true;

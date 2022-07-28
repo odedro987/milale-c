@@ -42,9 +42,9 @@ typedef struct guess
     State states[MAX_WORD_LEN];
 } Guess;
 
-Guess make_guess();
+Guess make_guess(Word *valid_words, int valid_len);
 bool check_guess(Guess *guess, const Word const secretWord);
-bool check_word(const Word const word);
+bool check_word(const Word const word, Word *valid_words, int valid_len);
 void set_console_color(State state);
 void print_letter(char letter, State state);
 void print_guess(const Guess const guess);
